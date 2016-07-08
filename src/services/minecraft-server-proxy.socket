@@ -1,0 +1,9 @@
+[Unit]
+Description=Minecraft server web socket
+Documentation=https://minecraft.net
+
+[Socket]
+ListenStream=25565
+
+[Install]
+WantedBy=sockets.target

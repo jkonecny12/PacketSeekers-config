@@ -1,0 +1,44 @@
+- hosts: home-server
+  remote_user: <user>
+  become: yes
+  become_method: sudo
+
+  tasks:
+    - name: Install tools
+      copy: src=./src/user/tools/ dest=/home/<user>/tools
+            owner=<user> group=<user>
+
+    - name: Set hostname
+      hostname: name=packetseekers.eu
+
+    - name: Add minecraft user
+      user: name=minecraft uid=1010
+    - name: Add factorio-server user
+      user: name=factorio-server uid=1011 createhome=no
+
+    - name: Copy minecraft files
+      copy: src=./src/games/minecraft/ dest=/home/minecraft/
+            owner=minecraft group=minecraft recurse=yes
+    - name: Copy factorio files
+      copy: src=./src/games/factorio-server dest=/opt/
+            owner=factorio-server group=factorio-server
+
+# should be used with rsync but it's not working in this settings
+#    - name: Set group and owner for minecraft files
+#      file: path=/home/minecraft/
+#            owner=minecraft group=minecraft recurse=yes
+
+#    - name: Copy factorio files
+#      synchronize: src=./src/games/factorio-server dest=/opt/
+#    - name: Set group and owner for factorio files
+#      file: path=/opt/factorio-server/
+#            owner=factorio-server group=factorio-server recurse=yes
+
+    - name: Install systemd files
+      copy: src=./src/services/ dest=/etc/systemd/system/
+            owner=root group=root mode=644
+
+    - name: Start factorio service and enable it
+      service: name=factorio-server state=started enabled=yes
+    - name: Start minecraft socket and enable it
+      service: name=minecraft-server-proxy.socket state=started enabled=yes

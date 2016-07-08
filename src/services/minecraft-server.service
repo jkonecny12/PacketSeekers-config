@@ -1,0 +1,16 @@
+[Unit]
+Description=Minecraft server application
+Documentation=https://minecraft.net
+After=network.target
+
+[Service]
+Type=simple
+User=minecraft
+#PrivateNetwork=yes
+
+ExecStart=/home/minecraft/tools/start-server.sh
+
+ExecStop=/home/minecraft/tools/stop-server.sh
+
+[Install]
+WantedBy=multi-user.target
